@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Limey Joe's Vacation Rentals</title>
+<meta name="description" content="Limey Joe's vacation rentals in Oswego and along the Salmon River, Lake Ontario. Check availability and book direct.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: same structure as Cannon's Sports Lodge (sticky bar, centered hero, overlapping booking panel), recolored lake-navy + lime. Single light theme by choice. */
+:root{
+  color-scheme:light;
+  --lake:#13324A; --lake-dark:#0B2133; --mist:#EDF2EC; --paper:#F8FBF6;
+  --lime:#4E7D14; --lime-dark:#3D6410; --lime-bright:#A9D046; --lime-wash:#E4EFD2;
+  --ink:#16222A; --ink-soft:#46535B; --line:#CFDCCB; --hero-text:#D3DEE6;
+  --white:#FFFFFF;
+  --display:'Fraunces', Georgia, 'Times New Roman', serif;
+  --body:'Karla', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0; background:var(--mist); color:var(--ink); font-family:var(--body); line-height:1.6; -webkit-font-smoothing:antialiased;}
+h1,h2,h3,.brand-word{font-family:var(--display); text-wrap:balance;}
+img,svg{max-width:100%; display:block;}
+a{color:inherit;}
+.wrap{max-width:1120px; margin:0 auto; padding-inline:max(16px, 28px);}
+@media (max-width:480px){ .wrap{padding-inline:16px;} }
+
+/* Header */
+header{position:sticky; top:env(safe-area-inset-top,0px); z-index:50; background:var(--lake); color:var(--mist); box-shadow:0 1px 0 rgba(0,0,0,.15);}
+.nav{display:flex; align-items:center; justify-content:space-between; padding:12px 28px; max-width:1120px; margin:0 auto; gap:18px;}
+@media (max-width:480px){ .nav{padding:12px 16px;} }
+.nav-brand{display:flex; align-items:center; gap:11px; font-weight:600; font-size:1.15rem; letter-spacing:.2px; text-decoration:none; min-width:0;}
+.logo-badge{flex:none; display:grid; place-items:center; border-radius:50%; background:var(--lime-bright); color:var(--lake-dark); font-family:var(--display); font-weight:700; border:2px solid var(--mist);}
+.nav-brand .logo-badge{width:44px; height:44px; font-size:1.05rem;}
+.nav-brand img{height:44px; width:44px; object-fit:cover; border-radius:50%; border:2px solid var(--lime-bright); background:var(--white);}
+.nav-links{display:flex; align-items:center; gap:26px; list-style:none; margin:0; padding:0; font-size:.93rem;}
+.nav-links > li > a, .menu-toggle{text-decoration:none; padding:0 0 3px; border:0; border-bottom:2px solid transparent; opacity:.88; background:none; color:inherit; font:inherit; cursor:pointer;}
+.nav-links > li > a:hover, .menu-toggle:hover, .nav-links > li > a:focus-visible, .menu-toggle:focus-visible{border-bottom-color:var(--lime-bright); opacity:1;}
+.nav-links > li > a.active, .menu-toggle.active{border-bottom-color:var(--lime-bright); opacity:1;}
+.menu-toggle .caret{display:inline-block; margin-left:6px; font-size:.7em; transition:transform .15s ease;}
+.has-menu{position:relative;}
+.has-menu.open .caret{transform:rotate(180deg);}
+.submenu-wrap{position:absolute; top:100%; left:-16px; padding-top:12px; display:none;}
+.has-menu.open .submenu-wrap{display:block;}
+@media (hover:hover) and (min-width:801px){ .has-menu:hover .submenu-wrap{display:block;} }
+.submenu{list-style:none; margin:0; padding:6px; min-width:270px; background:var(--paper); color:var(--ink); border:1px solid var(--line); border-radius:6px; box-shadow:0 16px 34px rgba(11,33,51,.22);}
+.submenu a{display:block; padding:10px 12px; border-radius:4px; text-decoration:none; font-weight:600; color:var(--lake-dark);}
+.submenu a small{display:block; font-weight:400; color:var(--ink-soft); font-size:.8rem;}
+.submenu a:hover, .submenu a:focus-visible{background:var(--lime-wash);}
+.submenu a.active{background:var(--lime-wash);}
+.nav-cta{background:var(--lime); color:var(--white); padding:10px 18px; border-radius:3px; text-decoration:none; font-weight:600; font-size:.88rem; white-space:nowrap;}
+.nav-cta:hover{background:var(--lime-dark);}
+.nav-toggle{display:none; background:none; border:1px solid rgba(237,242,236,.5); color:var(--mist); padding:7px 11px; border-radius:3px; font-size:1rem; cursor:pointer;}
+@media (max-width:800px){
+  .nav-links{position:fixed; top:0; right:0; height:100%; width:min(80vw,320px); background:var(--lake-dark); flex-direction:column; align-items:stretch; gap:0; padding:26px; padding-top:calc(90px + env(safe-area-inset-top,0px)); transform:translateX(100%); transition:transform .25s ease; z-index:60; overflow-y:auto;}
+  .nav-links.open{transform:translateX(0);}
+  .nav-toggle{display:block; position:relative; z-index:70;}
+  .nav-cta{display:none;}
+  .nav-links > li > a, .menu-toggle{font-size:1.08rem; padding:12px 0; border-bottom:1px solid #1E3A52; width:100%; display:block; text-align:left;}
+  .menu-toggle .caret{display:none;}
+  .submenu-wrap{position:static; display:block; padding:4px 0 8px;}
+  .submenu{background:none; border:0; box-shadow:none; min-width:0; padding:0 0 0 12px;}
+  .submenu a{color:var(--mist); padding:9px 0; border-radius:0;}
+  .submenu a small{color:var(--hero-text);}
+  .submenu a:hover, .submenu a.active{background:none; color:var(--lime-bright);}
+}
+
+/* Hero */
+.page-hero{background:var(--lake); color:var(--mist); padding-block:46px 64px; text-align:center;}
+.page-hero .kicker{color:var(--lime-bright); font-weight:600; font-size:.85rem; letter-spacing:.04em; margin-bottom:8px; display:block;}
+.page-hero h1{font-size:clamp(1.9rem,4vw,2.6rem); margin:0 0 12px; font-weight:600;}
+.page-hero p{color:var(--hero-text); max-width:60ch; margin:0 auto; font-size:1.05rem;}
+.hero-logo{width:min(220px,60%); aspect-ratio:1; margin:0 auto 20px; border-radius:50%; background:var(--lime-bright); color:var(--lake-dark); border:4px solid var(--mist); box-shadow:0 8px 22px rgba(0,0,0,.28); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:18px;}
+.hero-logo .lj-name{font-family:var(--display); font-weight:700; font-size:clamp(1.6rem,4.4vw,2.2rem); line-height:1.05;}
+.hero-logo .lj-sub{font-size:.72rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; margin-top:8px;}
+.hero-logo-img{width:min(300px,80%); height:auto; aspect-ratio:1; object-fit:contain; display:block; margin:0 auto 20px; border-radius:16px; border:3px solid var(--lime-bright); background:var(--white); padding:6px; box-shadow:0 8px 22px rgba(0,0,0,.28);}
+
+/* Sections */
+section{padding-block:60px;}
+section.alt{background:var(--paper); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+.section-head{max-width:660px; margin-bottom:32px;}
+.section-head .kicker{color:var(--lime); font-weight:700; font-size:.83rem; letter-spacing:.03em; margin-bottom:6px; display:block;}
+.section-head h2{font-size:clamp(1.5rem,3vw,2.05rem); margin:0 0 10px; color:var(--lake-dark);}
+.section-head p{color:var(--ink-soft); margin:0;}
+
+.btn{display:inline-block; background:var(--lime); color:var(--white); padding:11px 20px; border-radius:3px; text-decoration:none; font-weight:600; font-size:.92rem;}
+.btn:hover{background:var(--lime-dark);}
+
+/* Booking */
+.booking-panel{background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:26px; box-shadow:0 18px 40px rgba(11,33,51,.14);}
+@media (max-width:480px){ .booking-panel{padding:20px;} }
+.booking-panel h2{margin:0 0 4px; font-size:1.35rem; color:var(--lake-dark);}
+.booking-panel p.sub{margin:0 0 18px; color:var(--ink-soft); font-size:.93rem;}
+.booking-form{display:grid; grid-template-columns:1.6fr 1fr 1fr .8fr auto; gap:13px; align-items:end;}
+.booking-form > div{min-width:0;}
+@media (max-width:960px){ .booking-form{grid-template-columns:1fr 1fr;} .booking-form > div:first-child, .booking-form .bf-btn{grid-column:1 / -1;} }
+@media (max-width:420px){ .booking-form{grid-template-columns:1fr;} }
+/* Date dropdowns */
+.date-field{position:relative;}
+.date-toggle{width:100%; display:flex; align-items:center; gap:8px; text-align:left; padding:9px 11px; min-height:42px; border:1px solid var(--line); border-radius:4px; background:var(--white); color:var(--ink); font-family:inherit; font-size:.95rem; cursor:pointer;}
+.date-toggle:hover, .date-toggle[aria-expanded="true"]{border-color:var(--lime);}
+.date-toggle .cal-icon{flex:none; width:18px; height:18px; color:var(--lime);}
+.date-toggle .date-text{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.date-toggle .date-text.empty{color:var(--ink-soft);}
+.date-toggle .date-caret{flex:none; color:var(--ink-soft); font-size:.8rem;}
+.date-calendar{position:absolute; top:calc(100% + 6px); left:0; z-index:30; width:min(296px, calc(100vw - 32px)); background:var(--white); border:1px solid var(--line); border-radius:8px; box-shadow:0 16px 34px rgba(11,33,51,.22); padding:12px;}
+@media (min-width:421px){ .date-field-end .date-calendar{left:auto; right:0;} }
+@media (min-width:961px){ .date-field-end .date-calendar{left:0; right:auto;} }
+.cal-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;}
+.cal-header button{background:none; border:1px solid var(--line); border-radius:4px; width:30px; height:30px; cursor:pointer; color:var(--lake-dark); font-size:1rem; line-height:1; font-family:inherit;}
+.cal-header button:hover:not(:disabled){background:var(--lime-wash);}
+.cal-header button:disabled{opacity:.35; cursor:not-allowed;}
+.cal-label{font-weight:700; color:var(--lake-dark); font-size:.92rem;}
+.cal-dow, .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:2px;}
+.cal-dow{margin-bottom:4px;}
+.cal-dow span{text-align:center; font-size:.72rem; color:var(--ink-soft); font-weight:700;}
+.cal-grid button{aspect-ratio:1; border:none; background:none; border-radius:4px; font-size:.86rem; color:var(--ink); cursor:pointer; font-family:inherit; font-variant-numeric:tabular-nums;}
+.cal-grid button:hover:not(:disabled){background:var(--lime-wash);}
+.cal-grid button.in-range{background:var(--lime-wash);}
+.cal-grid button.selected{background:var(--lime); color:var(--white); font-weight:700;}
+.cal-grid button.today{box-shadow:inset 0 0 0 1px var(--lime);}
+.cal-grid button:disabled{color:#B7C2B9; cursor:not-allowed;}
+.cal-foot{margin:8px 0 0; font-size:.78rem; color:var(--ink-soft);}
+.booking-form button.btn{border:0; cursor:pointer; font-family:inherit; white-space:nowrap;}
+.form-error{margin:10px 0 0; color:#A3261B; font-size:.88rem; font-weight:600;}
+.results{margin-top:22px; padding-top:20px; border-top:1px solid var(--line); scroll-margin-top:90px;}
+.results-head{margin-bottom:16px;}
+.results-head h3{margin:0 0 2px; font-size:1.2rem; color:var(--lake-dark);}
+.results-head p{margin:0; color:var(--ink-soft); font-size:.9rem;}
+.results-status{margin:0 0 16px; color:var(--ink-soft); font-size:.93rem;}
+.results-status a{color:var(--lime); font-weight:700;}
+.results .homes-grid{margin-bottom:18px;}
+.booking-form label{display:block; font-size:.76rem; text-transform:uppercase; letter-spacing:.06em; color:var(--lake); margin-bottom:5px; font-weight:700;}
+.booking-form select{width:100%; padding:10px 11px; border:1px solid var(--line); border-radius:4px; font-family:inherit; font-size:.95rem; background:var(--white); color:var(--ink);}
+.booking-form .btn{width:100%; text-align:center; padding:12px 18px; font-size:.95rem; border-radius:4px;}
+.secure-note{display:flex; gap:12px; align-items:flex-start; margin-top:18px; padding:14px 16px; background:var(--mist); border:1px solid var(--line); border-radius:6px; color:var(--ink-soft); font-size:.82rem; line-height:1.5;}
+.secure-note svg{flex:none; width:17px; height:17px; color:var(--lake); margin-top:1px;}
+.secure-note p{margin:0; min-width:0;}
+.secure-note strong{color:var(--lake-dark);}
+
+/* Area quicklinks */
+.quicklinks{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+@media (max-width:700px){ .quicklinks{grid-template-columns:1fr;} }
+.qlink{display:block; background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:22px; text-decoration:none; transition:box-shadow .15s ease, border-color .15s ease;}
+.qlink:hover{box-shadow:0 10px 26px rgba(11,33,51,.12); border-color:var(--lime-bright);}
+.qlink h3{margin:0 0 6px; color:var(--lake-dark); font-size:1.15rem;}
+.qlink p{margin:0; color:var(--ink-soft); font-size:.92rem;}
+.qlink span.arrow{color:var(--lime); font-weight:700; font-size:.85rem; display:inline-block; margin-top:10px;}
+
+/* Map */
+.map-frame{position:relative; width:100%; aspect-ratio:16/9; max-width:100%; border:1px solid var(--line); border-radius:8px; overflow:hidden; background:var(--lime-wash);}
+@media (max-width:600px){ .map-frame{aspect-ratio:4/5;} }
+.map-frame iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+.map-frame .map-fallback{position:absolute; inset:0; display:grid; place-items:center; text-align:center; padding:20px; color:var(--ink-soft); font-size:.9rem;}
+.map-link{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-top:14px; border:1px solid var(--line); border-radius:8px; padding:18px 22px; background:var(--paper); text-decoration:none;}
+.map-link:hover{border-color:var(--lime-bright);}
+.map-link strong{display:block; color:var(--lake-dark);}
+.map-link span.small{color:var(--ink-soft); font-size:.9rem;}
+
+/* Homes */
+.homes-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:20px;}
+.home-card{display:flex; flex-direction:column; background:var(--paper); border:1px solid var(--line); border-radius:8px; overflow:hidden; text-decoration:none; transition:box-shadow .15s ease, border-color .15s ease;}
+.home-card .cover{position:relative; aspect-ratio:3/2; max-width:100%; background:var(--lime-wash); border-bottom:1px solid var(--line); overflow:hidden;}
+.home-card .cover-fallback{position:absolute; inset:0; display:grid; place-items:center; color:var(--lime); font-family:var(--display); font-weight:600; font-size:.95rem;}
+.home-card .cover img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .3s ease;}
+.home-card:hover .cover img{transform:scale(1.04);}
+.home-card .body{display:flex; flex-direction:column; flex:1; padding:20px 22px 22px;}
+.home-card:hover{box-shadow:0 10px 26px rgba(11,33,51,.12); border-color:var(--lime-bright);}
+.home-card h3{margin:0 0 6px; font-size:1.12rem; color:var(--lake-dark); line-height:1.3;}
+.home-card .town{color:var(--ink-soft); font-size:.9rem; margin:0 0 14px;}
+.home-card .meta{margin-top:auto; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
+.capacity-pill{background:var(--lake); color:var(--mist); font-size:.8rem; font-weight:600; padding:5px 12px; border-radius:20px; white-space:nowrap; font-variant-numeric:tabular-nums;}
+.home-card .arrow{color:var(--lime); font-weight:700; font-size:.88rem;}
+
+/* Contact */
+.contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:44px;}
+.contact-grid > *{min-width:0;}
+@media (max-width:760px){ .contact-grid{grid-template-columns:1fr;} }
+.contact-form{display:grid; gap:14px;}
+.contact-form label{font-size:.8rem; text-transform:uppercase; letter-spacing:.05em; color:var(--lake); margin-bottom:4px; display:block; font-weight:700;}
+.contact-form input, .contact-form textarea{width:100%; padding:10px 11px; border:1px solid var(--line); border-radius:4px; font-family:inherit; font-size:.95rem; background:var(--white); color:var(--ink);}
+.contact-form button{background:var(--lime); color:var(--white); border:none; padding:12px 20px; border-radius:4px; font-weight:600; cursor:pointer; font-size:.95rem; font-family:inherit; justify-self:start;}
+.contact-form button:hover{background:var(--lime-dark);}
+.contact-form button:disabled{opacity:.6; cursor:wait;}
+.contact-success{padding:20px; background:var(--paper); border:1px solid var(--line); border-radius:6px; color:var(--lake-dark); font-weight:600;}
+.contact-info{margin:0;}
+.contact-info dt{font-weight:700; color:var(--lake-dark); margin-top:18px; font-size:.95rem;}
+.contact-info dt:first-child{margin-top:0;}
+.contact-info dd{margin:3px 0 0; color:var(--ink-soft); overflow-wrap:anywhere;}
+/* Footer */
+footer{background:var(--lake-dark); color:#A9BAC6; padding-block:38px; padding-bottom:calc(38px + env(safe-area-inset-bottom,0px));}
+.footer-grid{display:flex; justify-content:space-between; flex-wrap:wrap; gap:20px; font-size:.87rem;}
+.footer-grid a{text-decoration:none; color:#C9D6DF;}
+.footer-grid a:hover{color:var(--lime-bright);}
+.footer-links{display:flex; gap:16px; flex-wrap:wrap;}
+
+.skip-link{position:absolute; left:-999px; top:0; background:var(--lime); color:var(--white); padding:10px 16px; z-index:100;}
+.skip-link:focus{left:10px; top:10px;}
+:focus-visible{outline:3px solid var(--lime-bright); outline-offset:2px;}
+@media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto !important; transition:none !important;} }
+
+.page{display:none;}
+.page.active{display:block;}
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header>
+  <nav class="nav" aria-label="Main">
+    <a class="nav-brand" href="#home"><img src="data:image/webp;base64,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" alt="Limey Joe's logo"><span class="brand-word">Limey Joe's</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a data-page="home" href="#home">Book</a></li>
+      <li class="has-menu" id="homesMenu">
+        <button class="menu-toggle" id="homesToggle" type="button" aria-expanded="false" aria-controls="homesSubmenu">Our Homes<span class="caret" aria-hidden="true">&#9660;</span></button>
+        <div class="submenu-wrap">
+          <ul class="submenu" id="homesSubmenu">
+            <li><a data-page="oswego-city" href="#oswego-city">Oswego City<small>Downtown Oswego, NY</small></a></li>
+            <li><a data-page="salmon-river" href="#salmon-river">Port Ontario &amp; the Salmon River<small>Pulaski &amp; Mexico Point</small></a></li>
+            <li><a href="https://cannonslodge.com" target="_blank" rel="noopener">Cannon's Sports Lodge<small>Altmar, NY &middot; Lodge rooms, cabin &amp; RV park &#8599;</small></a></li>
+          </ul>
+        </div>
+      </li>
+      <li><a data-page="contact" href="#contact">Contact</a></li>
+    </ul>
+    <a class="nav-cta" href="#home">Check Availability</a>
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">&#9776;</button>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- ============ BOOK (home) ============ -->
+  <div class="page active" id="page-home">
+    <section class="page-hero">
+      <div class="wrap">
+        <img class="hero-logo-img" src="data:image/webp;base64,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" alt="Limey Joe's logo: a smiling lime in a fishing hat, casting from a boat flying British and American flags">
+        <span class="kicker">Lake Ontario &middot; Oswego &middot; The Salmon River</span>
+        <h1>Book your stay with Limey Joe's</h1>
+        <p>Comfortable, fully equipped homes in Oswego, Pulaski &amp; the Salmon River, close to Lake Ontario, the state beaches, year-round fishing, and nearby snowmobile and ATV/SSV trails.</p>
+      </div>
+    </section>
+
+    <div class="wrap" style="margin-top:-8px; position:relative; z-index:5;">
+      <div class="booking-panel" id="book">
+        <h2>Check availability &amp; book</h2>
+        <p class="sub">Choose a region, your dates and group size. The next page shows the homes available for those dates, with live pricing.</p>
+        <form class="booking-form" id="bookingForm" novalidate>
+          <div>
+            <label for="region">Choose a region</label>
+            <select id="region" name="region">
+              <option value="oswego">Oswego City</option>
+              <option value="river" selected>Port Ontario &amp; the Salmon River</option>
+            </select>
+          </div>
+          <div class="date-field" data-field="checkin">
+            <label id="checkin-label" for="checkin-btn">Check-in</label>
+            <button type="button" class="date-toggle" id="checkin-btn" aria-haspopup="dialog" aria-expanded="false"><svg class="cal-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 2h2v2h6V2h2v2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V2zM5 10v10h14V10H5zm2 2h3v3H7v-3z"/></svg><span class="date-text">Select date</span><span class="date-caret" aria-hidden="true">&#9662;</span></button>
+            <input type="hidden" id="checkin" name="checkin">
+            <div class="date-calendar" role="dialog" aria-label="Choose check-in date" hidden></div>
+          </div>
+          <div class="date-field date-field-end" data-field="checkout">
+            <label id="checkout-label" for="checkout-btn">Check-out</label>
+            <button type="button" class="date-toggle" id="checkout-btn" aria-haspopup="dialog" aria-expanded="false"><svg class="cal-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 2h2v2h6V2h2v2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V2zM5 10v10h14V10H5zm2 2h3v3H7v-3z"/></svg><span class="date-text">Select date</span><span class="date-caret" aria-hidden="true">&#9662;</span></button>
+            <input type="hidden" id="checkout" name="checkout">
+            <div class="date-calendar" role="dialog" aria-label="Choose check-out date" hidden></div>
+          </div>
+          <div>
+            <label for="guests">Guests</label>
+            <select id="guests" name="guests"></select>
+          </div>
+          <div class="bf-btn">
+            <a class="btn" id="bookBtn" href="#" target="_blank" rel="noopener">See available homes</a>
+          </div>
+        </form>
+        <p class="form-error" id="formError" hidden></p>
+        <div class="results" id="results" aria-live="polite" hidden></div>
+        <div class="secure-note">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3H9z"/></svg>
+          <p><strong>Secure booking powered by Lodgify.</strong> Limey Joe's takes reservations and payments through Lodgify, a trusted vacation rental booking platform. You'll choose dates and check out on Lodgify's secure pages under the Limey Joe's name.</p>
+        </div>
+      </div>
+    </div>
+
+    <section aria-labelledby="areas-head">
+      <div class="wrap">
+        <div class="section-head" id="areas-head">
+          <span class="kicker">Our homes</span>
+          <h2>City Stay or Country Getaway</h2>
+          <p>All of our homes are pet friendly, so the whole family can come along. Every home has a full kitchen, fast wifi, and linens and towels, for a comfortable stay after a day on the water, exploring the Port City, or riding the trails.</p>
+        </div>
+        <div class="quicklinks">
+          <a class="qlink" href="#oswego-city"><h3>Oswego City</h3><p>Walkable stays in town, close to the parks, the harbor, and SUNY Oswego.</p><span class="arrow" id="count-oswego">View homes &amp; map &rarr;</span></a>
+          <a class="qlink" href="#salmon-river"><h3>Port Ontario &amp; the Salmon River</h3><p>River-view and riverside homes near Pulaski and Mexico Point, minutes from the lake and the trails.</p><span class="arrow" id="count-river">View homes &amp; map &rarr;</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="alt" aria-labelledby="home-map-head">
+      <div class="wrap">
+        <div class="section-head" id="home-map-head">
+          <span class="kicker">Where we are</span>
+          <h2 id="homeMapTitle">Port Ontario &amp; the Salmon River</h2>
+          <p>The map follows the region you choose above.</p>
+        </div>
+        <div class="map-frame" id="homeMap" data-map="river"></div>
+        <a class="map-link" id="homeMapLink" href="#" target="_blank" rel="noopener">
+          <span><strong id="homeMapLinkTitle">Port Ontario &amp; the Salmon River</strong><span class="small">Open the map in Google Maps</span></span>
+          <span class="btn">Open map &rarr;</span>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ OSWEGO CITY ============ -->
+  <div class="page" id="page-oswego-city">
+    <section class="page-hero">
+      <div class="wrap">
+        <span class="kicker">Our homes</span>
+        <h1>Oswego City</h1>
+        <p>Stay right in town on the shore of Lake Ontario, steps from the parks, restaurants, and the Oswego River.</p>
+      </div>
+    </section>
+    <section aria-labelledby="osw-homes-head">
+      <div class="wrap">
+        <div class="section-head" id="osw-homes-head">
+          <span class="kicker">Book direct</span>
+          <h2>Homes in Oswego City</h2>
+        </div>
+        <div class="homes-grid" data-area="oswego"></div>
+      </div>
+    </section>
+    <section class="alt" aria-labelledby="osw-map-head">
+      <div class="wrap">
+        <div class="section-head" id="osw-map-head">
+          <span class="kicker">Where we are</span>
+          <h2>Map of our Oswego homes</h2>
+        </div>
+        <div class="map-frame" data-map="oswego"></div>
+        <a class="map-link" data-map-link="oswego" href="#" target="_blank" rel="noopener">
+          <span><strong>Oswego, NY 13126</strong><span class="small">Open the map in Google Maps</span></span>
+          <span class="btn">Open map &rarr;</span>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ PORT ONTARIO & THE SALMON RIVER ============ -->
+  <div class="page" id="page-salmon-river">
+    <section class="page-hero">
+      <div class="wrap">
+        <span class="kicker">Our homes</span>
+        <h1>Port Ontario &amp; the Salmon River</h1>
+        <p>Homes along the Salmon River and out toward Mexico Point, close to Lake Ontario, the state beaches, and snowmobile and ATV trails.</p>
+      </div>
+    </section>
+    <section aria-labelledby="sr-homes-head">
+      <div class="wrap">
+        <div class="section-head" id="sr-homes-head">
+          <span class="kicker">Book direct</span>
+          <h2>Homes on the Salmon River</h2>
+        </div>
+        <div class="homes-grid" data-area="river"></div>
+      </div>
+    </section>
+    <section class="alt" aria-labelledby="sr-map-head">
+      <div class="wrap">
+        <div class="section-head" id="sr-map-head">
+          <span class="kicker">Where we are</span>
+          <h2>Map of our Salmon River homes</h2>
+        </div>
+        <div class="map-frame" data-map="river"></div>
+        <a class="map-link" data-map-link="river" href="#" target="_blank" rel="noopener">
+          <span><strong>Port Ontario &amp; the Salmon River</strong><span class="small">Open the map in Google Maps</span></span>
+          <span class="btn">Open map &rarr;</span>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ CONTACT ============ -->
+  <div class="page" id="page-contact">
+    <section class="page-hero">
+      <div class="wrap">
+        <span class="kicker">Get in touch</span>
+        <h1>Contact us</h1>
+        <p>Questions about a stay, a large group, bringing your pets, or the fishing and trails nearby? Send a note and we'll get back to you.</p>
+      </div>
+    </section>
+    <section>
+      <div class="wrap">
+        <div class="contact-grid">
+          <div>
+            <form class="contact-form" id="contactForm" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html" novalidate>
+              <input type="hidden" name="form-name" value="contact">
+              <p hidden><label>Don't fill this out if you're human: <input name="bot-field"></label></p>
+              <div><label for="cname">Name</label><input type="text" id="cname" name="name" autocomplete="name" required></div>
+              <div><label for="cemail">Email</label><input type="email" id="cemail" name="email" autocomplete="email" required></div>
+              <div><label for="cphone">Phone number (optional)</label><input type="tel" id="cphone" name="phone" autocomplete="tel"></div>
+              <div><label for="cmsg">Message</label><textarea id="cmsg" name="message" rows="6" required></textarea></div>
+              <button type="submit" id="cSubmit">Send message</button>
+              <p class="form-error" id="cError" hidden></p>
+            </form>
+            <div class="contact-success" id="contactSuccess" hidden>Thanks, your message has been sent. We'll be in touch soon.</div>
+          </div>
+          <dl class="contact-info">
+            <dt>Where we are</dt><dd>Limey Joe's Vacation Rentals<br>Oswego, Pulaski &amp; the Salmon River, NY</dd>
+            <dt>Phone</dt><dd>[Phone number]</dd>
+            <dt>Email</dt><dd>commonwealthpropertymgt@gmail.com</dd>
+            <dt>Groups of 13 or more</dt><dd>Tell us your dates and group size and we'll help you put together a stay across more than one home.</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap footer-grid">
+    <span>&copy; 2026 Limey Joe's. All rights reserved.</span>
+    <span class="footer-links"><a href="#home">Book direct</a><a href="#oswego-city">Oswego City</a><a href="#salmon-river">Port Ontario &amp; the Salmon River</a><a href="#contact">Contact</a></span>
+  </div>
+</footer>
+
+<script>
+/* ===================== SETTINGS — edit these ===================== */
+// Lodgify booking site. When Limey Joe's gets its own Lodgify site/domain, change this one line.
+var BOOKING_SITE = 'https://book.cannonssportslodge.com/en/';
+
+// Map widgets. Use a Google My Maps "embed" link (Share > Embed on my site) for each area.
+var MAPS = {
+  river:  { embed: 'https://www.google.com/maps/d/embed?mid=1UdxHeDQgVg9TMUTtTHCB1vDvPdo2zxo&ehbc=2E312F',
+            open:  'https://www.google.com/maps/d/viewer?mid=1UdxHeDQgVg9TMUTtTHCB1vDvPdo2zxo' },
+  oswego: { embed: 'https://www.google.com/maps?q=Oswego,+NY+13126&z=14&output=embed',
+            open:  'https://www.google.com/maps/search/?api=1&query=Oswego,+NY+13126' }
+};
+
+// Homes: name, town, max guests, Lodgify page slug, cover photo URL, area ('oswego' or 'river').
+// Cover photos are each listing's main Lodgify photo. To use a different photo, paste its image URL into 'cover'.
+var HOMES = [
+  { name:'Steps from the Park', town:'Oswego', guests:8, slug:'steps-from-the-park', cover:'https://l.icdbcdn.com/oh/c5bf6786-720e-41ea-827a-15dfc0cb8f6f.png?w=800', area:'oswego' },
+  { name:'Central and Convenient Ground Floor Apartment', town:'Oswego', guests:4, slug:'central-and-convenient-ground-floor-apartment', cover:'https://l.icdbcdn.com/oh/66e2dac5-570f-4d7f-aeb2-9b2d7b2c1940.png?w=800', area:'oswego' },
+  { name:'Country Cottage by the Salmon River', town:'Pulaski', guests:8, slug:'country-cottage-by-the-salmon-river', cover:'https://l.icdbcdn.com/oh/237d2408-990b-4d87-9bb1-650c60dac382.jpg?w=800', area:'river' },
+  { name:'Riverview Bliss in Beautiful Home', town:'Pulaski', guests:8, slug:'riverview-bliss-in-beautiful-home', cover:'https://l.icdbcdn.com/oh/bfc0da63-4ecc-45d7-9868-79e6600ca0dc.jpg?w=800', area:'river' },
+  { name:'Salmon River View: Bar, Grill & Perfect Location', town:'Pulaski', guests:12, slug:'salmon-river-view-bar-grill-perfect-location', cover:'https://l.icdbcdn.com/oh/a1d3ae60-fcb0-4b9a-9354-28cb498504a6.png?w=800', area:'river' },
+  { name:'Rustic Riverside Charm & Exclusive Fishing Access', town:'Pulaski', guests:8, slug:'rustic-riverside-charm-and-exclusive-fishing-access', cover:'https://l.icdbcdn.com/oh/6510b3f9-ad4e-4733-9d6c-acffdde9eb27.jpg?w=800', area:'river' },
+  { name:'Charming Cottage by Lake Ontario: Firepit & Yard', town:'Pulaski', guests:6, slug:'charming-cottage-by-lake-ontario-firepit-yard', cover:'https://l.icdbcdn.com/oh/67c72fc5-0fe9-4188-8913-30a0cc58e770.jpg?w=800', area:'river' },
+  { name:'Mexico Point Ranch', town:'Mexico', guests:7, slug:'mexico-point-ranch', cover:'https://l.icdbcdn.com/oh/39d8aa7d-2d1f-423f-809d-8c440dbc71c8.jpg?w=800', area:'river' },
+  { name:'Mexico Point Farmhouse', town:'Mexico', guests:6, slug:'mexico-point-farmhouse', cover:'https://l.icdbcdn.com/oh/75865f45-b8f5-4cff-b433-e52a3f191f7b.jpg?w=800', area:'river' }
+];
+var AREA_LABEL = { oswego:'Oswego City', river:'Port Ontario & the Salmon River' };
+/* ================================================================= */
+
+function homeUrl(h){ return BOOKING_SITE + h.slug; }
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+/* Home cards */
+document.querySelectorAll('.homes-grid').forEach(function(grid){
+  var area = grid.getAttribute('data-area');
+  grid.innerHTML = HOMES.filter(function(h){ return h.area === area; }).map(function(h){
+    return '<a class="home-card" href="' + homeUrl(h) + '" target="_blank" rel="noopener">' +
+      '<div class="cover"><span class="cover-fallback">' + esc(h.town) + ', NY</span>' +
+        (h.cover ? '<img src="' + h.cover + '" alt="' + esc(h.name) + '" loading="lazy" onerror="this.remove()">' : '') +
+      '</div><div class="body">' +
+      '<h3>' + esc(h.name) + '</h3>' +
+      '<p class="town">' + esc(h.town) + ', NY</p>' +
+      '<div class="meta"><span class="capacity-pill">Sleeps ' + h.guests + '</span><span class="arrow">View &amp; book &rarr;</span></div>' +
+    '</div></a>';
+  }).join('');
+});
+['oswego','river'].forEach(function(a){
+  var n = HOMES.filter(function(h){ return h.area === a; }).length;
+  var el = document.getElementById(a === 'oswego' ? 'count-oswego' : 'count-river');
+  if(el) el.innerHTML = 'View ' + n + ' homes &amp; map &rarr;';
+});
+
+/* Map widgets (loaded when the page is shown) */
+document.querySelectorAll('[data-map-link]').forEach(function(a){ a.href = MAPS[a.getAttribute('data-map-link')].open; });
+function loadMap(frame){
+  if(!frame || frame.getAttribute('data-loaded')) return;
+  var m = MAPS[frame.getAttribute('data-map')];
+  frame.innerHTML = '<div class="map-fallback">Loading map&hellip; If it doesn’t appear, use the Open map button below.</div>' +
+    '<iframe src="' + m.embed + '" title="Map of ' + esc(AREA_LABEL[frame.getAttribute('data-map')]) + ' homes" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>';
+  frame.setAttribute('data-loaded','1');
+}
+
+/* Booking widget: region + dates + guests -> Lodgify search results */
+// Lodgify "location" filter value for each region. Leave '' to search all homes.
+var REGION_LOCATION = { oswego:'Oswego', river:'Pulaski' };
+// Regions that show live availability on this site (via the Netlify function). Add oswego:true once its IDs are in the function.
+var LIVE_REGIONS = { river:true };
+var AVAILABILITY_URL = '/.netlify/functions/availability';
+var CHECKOUT_BASE = 'https://checkout.lodgify.com/en/limeyjoes/';
+function searchUrl(region, checkin, checkout, guests){
+  var p = new URLSearchParams({ currency:'USD', arrival:checkin, departure:checkout, adults:String(guests), children:'0', infants:'0', pets:'0' });
+  if(REGION_LOCATION[region]) p.set('location', REGION_LOCATION[region]);
+  return BOOKING_SITE + 'all-properties?' + p.toString();
+}
+(function(){
+  var form = document.getElementById('bookingForm');
+  var region = document.getElementById('region');
+  var inEl = document.getElementById('checkin');
+  var outEl = document.getElementById('checkout');
+  var guestsSel = document.getElementById('guests');
+  var err = document.getElementById('formError');
+  var max = Math.max.apply(null, HOMES.map(function(h){ return h.guests; }));
+  for(var g=1; g<=max; g++){
+    var o = document.createElement('option'); o.value = g; o.textContent = g + (g===1 ? ' Guest' : ' Guests'); guestsSel.appendChild(o);
+  }
+  var big = document.createElement('option'); big.value = 'large'; big.textContent = (max + 1) + '+ Guests'; guestsSel.appendChild(big);
+  guestsSel.value = '2';
+
+  function iso(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+  function parse(s){ var p = s.split('-'); return new Date(+p[0], +p[1]-1, +p[2]); }
+  function addDays(s, n){ var d = parse(s); d.setDate(d.getDate()+n); return iso(d); }
+  function pretty(s){ return parse(s).toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric', year:'numeric'}); }
+  var today = iso(new Date());
+
+  /* Calendar dropdowns */
+  var fields = {};
+  document.querySelectorAll('.date-field').forEach(function(f){
+    var key = f.getAttribute('data-field');
+    fields[key] = { el:f, btn:f.querySelector('.date-toggle'), text:f.querySelector('.date-text'), input:f.querySelector('input[type=hidden]'), cal:f.querySelector('.date-calendar'), view:null };
+    fields[key].text.classList.add('empty');
+    fields[key].btn.addEventListener('click', function(e){ e.stopPropagation(); fields[key].cal.hidden ? openCal(key) : closeCals(); });
+    fields[key].cal.addEventListener('click', function(e){ e.stopPropagation(); });
+  });
+  function minFor(key){ return key === 'checkout' && inEl.value ? addDays(inEl.value, 1) : (key === 'checkout' ? addDays(today, 1) : today); }
+  function setValue(key, val){
+    var f = fields[key];
+    f.input.value = val || '';
+    f.text.textContent = val ? pretty(val) : 'Select date';
+    f.text.classList.toggle('empty', !val);
+  }
+  function closeCals(){
+    Object.keys(fields).forEach(function(k){ fields[k].cal.hidden = true; fields[k].btn.setAttribute('aria-expanded','false'); });
+  }
+  function openCal(key){
+    closeCals();
+    var f = fields[key];
+    var base = parse(f.input.value || minFor(key));
+    f.view = new Date(base.getFullYear(), base.getMonth(), 1);
+    renderCal(key);
+    f.cal.hidden = false;
+    f.btn.setAttribute('aria-expanded','true');
+    var sel = f.cal.querySelector('.cal-grid button.selected') || f.cal.querySelector('.cal-grid button:not(:disabled)');
+    if(sel) sel.focus();
+  }
+  function renderCal(key){
+    var f = fields[key], v = f.view, min = minFor(key);
+    var y = v.getFullYear(), m = v.getMonth();
+    var first = new Date(y, m, 1).getDay(), days = new Date(y, m+1, 0).getDate();
+    var minD = parse(min), canPrev = (y > minD.getFullYear()) || (y === minD.getFullYear() && m > minD.getMonth());
+    var html = '<div class="cal-header"><button type="button" data-nav="-1" aria-label="Previous month"' + (canPrev ? '' : ' disabled') + '>&lsaquo;</button>' +
+      '<span class="cal-label">' + v.toLocaleDateString('en-US', {month:'long', year:'numeric'}) + '</span>' +
+      '<button type="button" data-nav="1" aria-label="Next month">&rsaquo;</button></div>' +
+      '<div class="cal-dow"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div><div class="cal-grid">';
+    for(var i=0;i<first;i++) html += '<span></span>';
+    for(var d=1; d<=days; d++){
+      var s = iso(new Date(y, m, d)), cls = [];
+      if(s === f.input.value) cls.push('selected');
+      if(inEl.value && outEl.value && s > inEl.value && s < outEl.value) cls.push('in-range');
+      if(s === today) cls.push('today');
+      html += '<button type="button" data-date="' + s + '" class="' + cls.join(' ') + '" aria-label="' + pretty(s) + '"' + (s < min ? ' disabled' : '') + '>' + d + '</button>';
+    }
+    html += '</div>';
+    if(key === 'checkout' && inEl.value) html += '<p class="cal-foot">Check-in ' + pretty(inEl.value) + '</p>';
+    f.cal.innerHTML = html;
+    f.cal.querySelectorAll('[data-nav]').forEach(function(b){
+      b.addEventListener('click', function(){ f.view = new Date(y, m + parseInt(b.getAttribute('data-nav'),10), 1); renderCal(key); });
+    });
+    f.cal.querySelectorAll('[data-date]').forEach(function(b){
+      b.addEventListener('click', function(){ pick(key, b.getAttribute('data-date')); });
+    });
+  }
+  function pick(key, val){
+    err.hidden = true;
+    setValue(key, val);
+    if(key === 'checkin'){
+      if(!outEl.value || outEl.value <= val) setValue('checkout', '');
+      openCal('checkout');
+    } else {
+      closeCals();
+      fields.checkout.btn.focus();
+    }
+  }
+  document.addEventListener('click', closeCals);
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeCals(); });
+
+  function fail(msg, el){ err.textContent = msg; err.hidden = false; if(el) el.focus(); return false; }
+  function validate(){
+    if(!inEl.value) return fail('Choose a check-in date.', fields.checkin.btn);
+    if(inEl.value < today) return fail('Check-in can’t be in the past. Choose today or a later date.', fields.checkin.btn);
+    if(!outEl.value) return fail('Choose a check-out date.', fields.checkout.btn);
+    if(outEl.value <= inEl.value) return fail('Check-out must be at least one night after check-in.', fields.checkout.btn);
+    err.hidden = true;
+    return true;
+  }
+  // The button is a real link (opens Lodgify in a new tab), so browsers and the preview never block it.
+  var bookBtn = document.getElementById('bookBtn');
+  // 13+ guests: the button becomes "Contact us" and opens the Contact page with a message started for them.
+  function isLargeGroup(){ return guestsSel.value === 'large'; }
+  function refreshLink(){
+    if(isLargeGroup()){
+      bookBtn.textContent = 'Contact us';
+      bookBtn.href = '#contact';
+      bookBtn.removeAttribute('target');
+      err.hidden = true;
+      return;
+    }
+    bookBtn.textContent = 'See available homes';
+    if(LIVE_REGIONS[region.value]){
+      bookBtn.removeAttribute('target');
+      bookBtn.href = '#book';
+    } else {
+      bookBtn.target = '_blank';
+      bookBtn.href = (inEl.value && outEl.value) ? searchUrl(region.value, inEl.value, outEl.value, guestsSel.value) : '#';
+    }
+  }
+
+  /* Live availability results (Salmon River region; uses the Netlify function) */
+  var results = document.getElementById('results');
+  function norm(s){ return String(s).toLowerCase().replace(/\band\b/g,'').replace(/[^a-z0-9]/g,'').slice(0,16); }
+  function matchHome(name){
+    var n = norm(name);
+    for(var i=0;i<HOMES.length;i++){ if(n && norm(HOMES[i].name) === n) return HOMES[i]; }
+    return null;
+  }
+  function checkoutUrl(id, a, d, guests){
+    var p = new URLSearchParams({ currency:'USD', arrival:a, departure:d, adults:String(guests), children:'0', infants:'0', pets:'0' });
+    return CHECKOUT_BASE + id + '/reservation?' + p.toString();
+  }
+  function resultCard(h, a, d, guests, note){
+    var local = matchHome(h.name) || {};
+    var name = local.name || h.name || ('Home ' + h.id);
+    var town = local.town ? esc(local.town) + ', NY' : 'Port Ontario &amp; the Salmon River';
+    return '<a class="home-card" href="' + checkoutUrl(h.id, a, d, guests) + '" target="_blank" rel="noopener">' +
+      '<div class="cover"><span class="cover-fallback">' + town + '</span>' +
+        (local.cover ? '<img src="' + local.cover + '" alt="' + esc(name) + '" loading="lazy" onerror="this.remove()">' : '') +
+      '</div><div class="body"><h3>' + esc(name) + '</h3><p class="town">' + town + '</p>' +
+      '<div class="meta">' + (local.guests ? '<span class="capacity-pill">Sleeps ' + local.guests + '</span>' : '<span></span>') +
+      '<span class="arrow">' + (note || 'Book these dates') + ' &rarr;</span></div></div></a>';
+  }
+  function showResults(){
+    var a = inEl.value, d = outEl.value, guests = parseInt(guestsSel.value, 10) || 1, area = region.value;
+    var label = AREA_LABEL[area];
+    results.hidden = false;
+    results.innerHTML = '<p class="results-status">Checking which homes are free from ' + pretty(a) + ' to ' + pretty(d) + '&hellip;</p>';
+    results.scrollIntoView({behavior:'smooth', block:'nearest'});
+    fetch(AVAILABILITY_URL + '?' + new URLSearchParams({ region:area, arrival:a, departure:d }).toString())
+      .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error || r.status); return j; }); })
+      .then(function(data){
+        var fits = function(h){ var l = matchHome(h.name); return !l || l.guests >= guests; };
+        var free = data.homes.filter(function(h){ return h.status === 'available' && fits(h); });
+        var unsure = data.homes.filter(function(h){ return h.status === 'unknown' && fits(h); });
+        var head = '<div class="results-head"><h3>' + (free.length ? free.length + (free.length === 1 ? ' home' : ' homes') + ' available' : 'No homes available') + '</h3>' +
+          '<p>' + esc(label) + ' &middot; ' + pretty(a) + ' to ' + pretty(d) + ' &middot; ' + guests + (guests === 1 ? ' guest' : ' guests') + '</p></div>';
+        var html = head;
+        if(free.length){
+          html += '<div class="homes-grid">' + free.map(function(h){ return resultCard(h, a, d, guests); }).join('') + '</div>';
+        } else if(!unsure.length){
+          html += '<p class="results-status">Every home in ' + esc(label) + ' is booked for those dates or too small for your group. Try different dates, or <a href="#contact">contact us</a> and we’ll help.</p>';
+        }
+        if(unsure.length){
+          html += '<p class="results-status">We couldn’t confirm these dates for the homes below. Open one to see its live calendar at checkout.</p>' +
+            '<div class="homes-grid">' + unsure.map(function(h){ return resultCard(h, a, d, guests, 'Check these dates'); }).join('') + '</div>';
+        }
+        results.innerHTML = html;
+      })
+      .catch(function(){
+        results.innerHTML = '<p class="results-status">We couldn’t check availability right now. <a href="' + searchUrl(area, a, d, guests) + '" target="_blank" rel="noopener">Search all homes on our booking site</a> instead.</p>';
+      });
+  }
+  function prefillContact(){
+    var msg = document.getElementById('cmsg');
+    if(!msg || msg.value.trim()) return;
+    var line = 'Hi, we are a group of ' + (max + 1) + ' or more guests looking to stay in ' + region.options[region.selectedIndex].text;
+    if(inEl.value && outEl.value) line += ' from ' + pretty(inEl.value) + ' to ' + pretty(outEl.value);
+    msg.value = line + '. Total number of guests: ';
+  }
+  bookBtn.addEventListener('click', function(e){
+    refreshLink();
+    if(isLargeGroup()){ prefillContact(); return; }
+    if(!validate()){ e.preventDefault(); return; }
+    if(LIVE_REGIONS[region.value]){ e.preventDefault(); showResults(); }
+  });
+  region.addEventListener('change', function(){ results.hidden = true; });
+  form.addEventListener('submit', function(e){ e.preventDefault(); });
+  region.addEventListener('change', refreshLink);
+  guestsSel.addEventListener('change', refreshLink);
+  var _setValue = setValue;
+  setValue = function(k, v){ _setValue(k, v); refreshLink(); };
+  refreshLink();
+})();
+
+/* Book page map: follows the region dropdown */
+(function(){
+  var frame = document.getElementById('homeMap'), link = document.getElementById('homeMapLink');
+  var region = document.getElementById('region');
+  function setArea(area){
+    var label = AREA_LABEL[area];
+    document.getElementById('homeMapTitle').textContent = label;
+    document.getElementById('homeMapLinkTitle').textContent = label;
+    link.href = MAPS[area].open;
+    if(frame.getAttribute('data-map') !== area){
+      frame.setAttribute('data-map', area);
+      frame.removeAttribute('data-loaded');
+      if(document.getElementById('page-home').classList.contains('active')) loadMap(frame);
+    }
+  }
+  region.addEventListener('change', function(){ setArea(region.value); });
+  setArea(region.value);
+})();
+
+/* Contact form (Netlify Forms) */
+(function(){
+  var cForm = document.getElementById('contactForm');
+  var cSuccess = document.getElementById('contactSuccess');
+  var cErr = document.getElementById('cError');
+  var btn = document.getElementById('cSubmit');
+  cForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    cErr.hidden = true;
+    if(!cForm.checkValidity()){
+      var bad = cForm.querySelector(':invalid');
+      cErr.textContent = bad && bad.type === 'email' ? 'Enter a valid email address so we can reply.' : 'Fill in your name, email and message.';
+      cErr.hidden = false;
+      if(bad) bad.focus();
+      return;
+    }
+    btn.disabled = true; btn.textContent = 'Sending…';
+    fetch('/', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:new URLSearchParams(new FormData(cForm)).toString() })
+      .then(function(r){
+        if(!r.ok) throw new Error('Status ' + r.status);
+        cForm.hidden = true; cSuccess.hidden = false;
+      })
+      .catch(function(){
+        btn.disabled = false; btn.textContent = 'Send message';
+        cErr.textContent = 'Your message didn’t send. Try again, or email us at commonwealthpropertymgt@gmail.com.';
+        cErr.hidden = false;
+      });
+  });
+})();
+
+/* Navigation, dropdown and page switching */
+(function(){
+  var toggle = document.getElementById('navToggle'), links = document.getElementById('navLinks');
+  var menu = document.getElementById('homesMenu'), menuBtn = document.getElementById('homesToggle');
+  function setMenu(open){ menu.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+  toggle.addEventListener('click', function(){ var o = links.classList.toggle('open'); toggle.setAttribute('aria-expanded', o ? 'true' : 'false'); });
+  menuBtn.addEventListener('click', function(e){ e.stopPropagation(); setMenu(!menu.classList.contains('open')); });
+  document.addEventListener('click', function(e){ if(!menu.contains(e.target)) setMenu(false); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ setMenu(false); links.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); } });
+
+  var pages = document.querySelectorAll('.page');
+  var pageLinks = document.querySelectorAll('[data-page]');
+  function showPage(id){
+    if(!document.getElementById('page-' + id)) id = 'home';
+    pages.forEach(function(p){ p.classList.toggle('active', p.id === 'page-' + id); });
+    pageLinks.forEach(function(a){ a.classList.toggle('active', a.getAttribute('data-page') === id); });
+    menuBtn.classList.toggle('active', id === 'oswego-city' || id === 'salmon-river');
+    var active = document.getElementById('page-' + id);
+    active.querySelectorAll('.map-frame').forEach(loadMap);
+    window.scrollTo({top:0, behavior:'auto'});
+    setMenu(false);
+    links.classList.remove('open'); toggle.setAttribute('aria-expanded','false');
+  }
+  function currentId(){ var h = (location.hash || '#home').replace('#',''); return h === 'main' || h === 'book' ? 'home' : h; }
+  window.addEventListener('hashchange', function(){ showPage(currentId()); });
+  showPage(currentId());
+})();
+</script>
+
+</body>
+</html>

@@ -493,7 +493,7 @@ function loadMap(frame){
 // Lodgify "location" filter value for each region. Leave '' to search all homes.
 var REGION_LOCATION = { oswego:'Oswego', river:'Pulaski' };
 // Regions that show live availability on this site (via the Netlify function). Add oswego:true once its IDs are in the function.
-var LIVE_REGIONS = { river:true };
+var LIVE_REGIONS = { river:true, oswego:true };
 var AVAILABILITY_URL = '/.netlify/functions/availability';
 var CHECKOUT_BASE = 'https://checkout.lodgify.com/en/limeyjoes/';
 function searchUrl(region, checkin, checkout, guests){
@@ -635,10 +635,12 @@ function searchUrl(region, checkin, checkout, guests){
     var p = new URLSearchParams({ currency:'USD', arrival:a, departure:d, adults:String(guests), children:'0', infants:'0', pets:'0' });
     return CHECKOUT_BASE + id + '/reservation?' + p.toString();
   }
+  // Extra details for homes in the search that have no tile on the site (matched by Lodgify ID).
+  var ID_INFO = { 856029:{ town:'Altmar' }, 856028:{ town:'Altmar' } };
   function resultCard(h, a, d, guests, note){
-    var local = matchHome(h.name) || {};
+    var local = matchHome(h.name) || ID_INFO[h.id] || {};
     var name = local.name || h.name || ('Home ' + h.id);
-    var town = local.town ? esc(local.town) + ', NY' : 'Port Ontario &amp; the Salmon River';
+    var town = local.town ? esc(local.town) + ', NY' : esc(AREA_LABEL[region.value]);
     return '<a class="home-card" href="' + checkoutUrl(h.id, a, d, guests) + '" target="_blank" rel="noopener">' +
       '<div class="cover"><span class="cover-fallback">' + town + '</span>' +
         (local.cover ? '<img src="' + local.cover + '" alt="' + esc(name) + '" loading="lazy" onerror="this.remove()">' : '') +

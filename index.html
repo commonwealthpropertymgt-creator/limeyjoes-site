@@ -652,8 +652,19 @@ function searchUrl(region, checkin, checkout, guests){
     results.hidden = false;
     results.innerHTML = '<p class="results-status">Checking which homes are free from ' + pretty(a) + ' to ' + pretty(d) + '&hellip;</p>';
     results.scrollIntoView({behavior:'smooth', block:'nearest'});
-    fetch(AVAILABILITY_URL + '?' + new URLSearchParams({ region:area, arrival:a, departure:d }).toString())
-      .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error || r.status); return j; }); })
+    var url = AVAILABILITY_URL + '?' + new URLSearchParams({ region:area, arrival:a, departure:d }).toString();
+    function getJson(){
+      return fetch(url).then(function(r){
+        return r.text().then(function(t){
+          var j; try { j = JSON.parse(t); } catch(e){ throw new Error('HTTP ' + r.status + ': not a checker response'); }
+          if(!r.ok) throw new Error(j.error || ('HTTP ' + r.status));
+          return j;
+        });
+      });
+    }
+    // Try twice: the first search after the site has been idle can be slow.
+    getJson()
+      .catch(function(e){ console.warn('Availability check failed, retrying:', e.message); return getJson(); })
       .then(function(data){
         var fits = function(h){ var l = matchHome(h.name); return !l || l.guests >= guests; };
         var free = data.homes.filter(function(h){ return h.status === 'available' && fits(h); });
@@ -672,7 +683,8 @@ function searchUrl(region, checkin, checkout, guests){
         }
         results.innerHTML = html;
       })
-      .catch(function(){
+      .catch(function(e){
+        console.error('Availability check failed:', e && e.message);
         results.innerHTML = '<p class="results-status">We couldn’t check availability right now. <a href="' + searchUrl(area, a, d, guests) + '" target="_blank" rel="noopener">Search all homes on our booking site</a> instead.</p>';
       });
   }

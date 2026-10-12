@@ -636,7 +636,11 @@ function searchUrl(region, checkin, checkout, guests){
     return CHECKOUT_BASE + id + '/reservation?' + p.toString();
   }
   // Extra details for homes in the search that have no tile on the site (matched by Lodgify ID).
-  var ID_INFO = { 856029:{ town:'Altmar' }, 856028:{ town:'Altmar' } };
+  var ID_INFO = {
+    808807:{ town:'Mexico', guests:13, cover:'https://l.icdbcdn.com/oh/7610e3ef-5c47-4d32-bbe3-4afd7e84a7d6.jpg?w=800' },
+    856029:{ town:'Altmar', guests:6, cover:'https://l.icdbcdn.com/oh/cbf19f1d-a561-47f9-9e75-cee5ae76965c.jpg?w=800' },
+    856028:{ town:'Altmar', guests:6, cover:'https://l.icdbcdn.com/oh/5bdf65c2-84f4-42be-9897-bde3eedd3397.jpg?w=800' }
+  };
   function resultCard(h, a, d, guests, note){
     var local = matchHome(h.name) || ID_INFO[h.id] || {};
     var name = local.name || h.name || ('Home ' + h.id);
@@ -668,7 +672,7 @@ function searchUrl(region, checkin, checkout, guests){
     getJson()
       .catch(function(e){ console.warn('Availability check failed, retrying:', e.message); return getJson(); })
       .then(function(data){
-        var fits = function(h){ var l = matchHome(h.name); return !l || l.guests >= guests; };
+        var fits = function(h){ var l = matchHome(h.name) || ID_INFO[h.id]; return !l || !l.guests || l.guests >= guests; };
         var free = data.homes.filter(function(h){ return h.status === 'available' && fits(h); });
         var unsure = data.homes.filter(function(h){ return h.status === 'unknown' && fits(h); });
         var head = '<div class="results-head"><h3>' + (free.length ? free.length + (free.length === 1 ? ' home' : ' homes') + ' available' : 'No homes available') + '</h3>' +

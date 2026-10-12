@@ -11,7 +11,20 @@ const REGIONS = {
   oswego: []
 };
 
+// Home names by ID, so searches don't have to ask Lodgify for them (keeps searches fast).
+// A home missing from this list has its name looked up from Lodgify instead.
+const NAMES = {
+  445688: 'Mexico Point Farmhouse',
+  445690: 'Salmon River view! | Bar, Grill & Perfect Location',
+  445691: 'Mexico Point Ranch',
+  445694: 'Rustic Riverside Charm and Exclusive Fishing Access!',
+  485239: 'Riverview Bliss in Beautiful Home',
+  634859: 'Country Cottage by the Salmon River',
+  792765: 'Charming Cottage by Lake Ontario | Firepit + Yard'
+};
+
 const API = 'https://api.lodgify.com/v2';
+const CALL_TIMEOUT_MS = 7000; // each Lodgify call gives up after 7 seconds so the function answers in time
 
 function json(status, body) {
   return {
@@ -30,9 +43,15 @@ function addDays(s, n) {
 }
 
 async function lodgify(path, key) {
-  const res = await fetch(API + path, { headers: { 'X-ApiKey': key, 'Accept': 'application/json' } });
-  if (!res.ok) throw new Error('Lodgify ' + res.status + ' on ' + path);
-  return res.json();
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), CALL_TIMEOUT_MS);
+  try {
+    const res = await fetch(API + path, { headers: { 'X-ApiKey': key, 'Accept': 'application/json' }, signal: ctrl.signal });
+    if (!res.ok) throw new Error('Lodgify ' + res.status + ' on ' + path);
+    return await res.json();
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 // Lodgify returns either [{ periods:[...] }] or a plain list of periods. Flatten to one list.
@@ -89,7 +108,7 @@ exports.handler = async (event) => {
   }
 
   const homes = await Promise.all(ids.map(async id => {
-    const name = await propertyName(id, key);
+    const name = NAMES[id] || await propertyName(id, key);
     try {
       // Lodgify's docs list both start/end and from/to for this call, so send both.
       const qs = new URLSearchParams({ start: arrival, end: departure, from: arrival, to: departure });

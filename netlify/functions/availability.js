@@ -7,8 +7,8 @@
 
 // Lodgify property IDs for each region. Add the Oswego IDs here when you have them.
 const REGIONS = {
-  river: [445688, 445690, 445691, 445694, 485239, 634859, 792765],
-  oswego: []
+  river: [445688, 445690, 445691, 445694, 485239, 634859, 792765, 808807, 856029, 856028],
+  oswego: [701384, 701378]
 };
 
 // Home names by ID, so searches don't have to ask Lodgify for them (keeps searches fast).

@@ -631,26 +631,33 @@ function searchUrl(region, checkin, checkout, guests){
     for(var i=0;i<HOMES.length;i++){ if(n && norm(HOMES[i].name) === n) return HOMES[i]; }
     return null;
   }
+  function stayParams(a, d, guests){
+    return new URLSearchParams({ currency:'USD', arrival:a, departure:d, adults:String(guests), children:'0', infants:'0', pets:'0' }).toString();
+  }
   function checkoutUrl(id, a, d, guests){
-    var p = new URLSearchParams({ currency:'USD', arrival:a, departure:d, adults:String(guests), children:'0', infants:'0', pets:'0' });
-    return CHECKOUT_BASE + id + '/reservation?' + p.toString();
+    return CHECKOUT_BASE + id + '/reservation?' + stayParams(a, d, guests);
+  }
+  // Each result opens the home's Lodgify page (photos, details) with the search dates and guests attached,
+  // so the page's Book button carries them on to checkout. Falls back to checkout if a home has no page slug.
+  function propertyUrl(slug, id, a, d, guests){
+    return slug ? BOOKING_SITE + slug + '?' + stayParams(a, d, guests) : checkoutUrl(id, a, d, guests);
   }
   // Extra details for homes in the search that have no tile on the site (matched by Lodgify ID).
   var ID_INFO = {
-    808807:{ town:'Mexico', guests:13, cover:'https://l.icdbcdn.com/oh/7610e3ef-5c47-4d32-bbe3-4afd7e84a7d6.jpg?w=800' },
-    856029:{ town:'Altmar', guests:6, cover:'https://l.icdbcdn.com/oh/cbf19f1d-a561-47f9-9e75-cee5ae76965c.jpg?w=800' },
-    856028:{ town:'Altmar', guests:6, cover:'https://l.icdbcdn.com/oh/5bdf65c2-84f4-42be-9897-bde3eedd3397.jpg?w=800' }
+    808807:{ town:'Mexico', guests:13, slug:'lake-ontario-estate-firepit-grill-fishing-charters', cover:'https://l.icdbcdn.com/oh/7610e3ef-5c47-4d32-bbe3-4afd7e84a7d6.jpg?w=800' },
+    856029:{ town:'Altmar', guests:6, slug:'salmon-river-lodge-3br-sleeps-6-trail-access', cover:'https://l.icdbcdn.com/oh/cbf19f1d-a561-47f9-9e75-cee5ae76965c.jpg?w=800' },
+    856028:{ town:'Altmar', guests:6, slug:'salmon-river-apt-sleeps-6-trail-access', cover:'https://l.icdbcdn.com/oh/5bdf65c2-84f4-42be-9897-bde3eedd3397.jpg?w=800' }
   };
   function resultCard(h, a, d, guests, note){
     var local = matchHome(h.name) || ID_INFO[h.id] || {};
     var name = local.name || h.name || ('Home ' + h.id);
     var town = local.town ? esc(local.town) + ', NY' : esc(AREA_LABEL[region.value]);
-    return '<a class="home-card" href="' + checkoutUrl(h.id, a, d, guests) + '" target="_blank" rel="noopener">' +
+    return '<a class="home-card" href="' + propertyUrl(local.slug, h.id, a, d, guests) + '" target="_blank" rel="noopener">' +
       '<div class="cover"><span class="cover-fallback">' + town + '</span>' +
         (local.cover ? '<img src="' + local.cover + '" alt="' + esc(name) + '" loading="lazy" onerror="this.remove()">' : '') +
       '</div><div class="body"><h3>' + esc(name) + '</h3><p class="town">' + town + '</p>' +
       '<div class="meta">' + (local.guests ? '<span class="capacity-pill">Sleeps ' + local.guests + '</span>' : '<span></span>') +
-      '<span class="arrow">' + (note || 'Book these dates') + ' &rarr;</span></div></div></a>';
+      '<span class="arrow">' + (note || 'View home &amp; book') + ' &rarr;</span></div></div></a>';
   }
   function showResults(){
     var a = inEl.value, d = outEl.value, guests = parseInt(guestsSel.value, 10) || 1, area = region.value;
@@ -684,8 +691,8 @@ function searchUrl(region, checkin, checkout, guests){
           html += '<p class="results-status">Every home in ' + esc(label) + ' is booked for those dates or too small for your group. Try different dates, or <a href="#contact">contact us</a> and we’ll help.</p>';
         }
         if(unsure.length){
-          html += '<p class="results-status">We couldn’t confirm these dates for the homes below. Open one to see its live calendar at checkout.</p>' +
-            '<div class="homes-grid">' + unsure.map(function(h){ return resultCard(h, a, d, guests, 'Check these dates'); }).join('') + '</div>';
+          html += '<p class="results-status">We couldn’t confirm these dates for the homes below. Open one to see its photos and live calendar.</p>' +
+            '<div class="homes-grid">' + unsure.map(function(h){ return resultCard(h, a, d, guests, 'View home &amp; check dates'); }).join('') + '</div>';
         }
         results.innerHTML = html;
       })

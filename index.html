@@ -174,6 +174,16 @@ section.alt{background:var(--paper); border-top:1px solid var(--line); border-bo
 .home-card .meta{margin-top:auto; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
 .capacity-pill{background:var(--lake); color:var(--mist); font-size:.8rem; font-weight:600; padding:5px 12px; border-radius:20px; white-space:nowrap; font-variant-numeric:tabular-nums;}
 .home-card .arrow{color:var(--lime); font-weight:700; font-size:.88rem;}
+.pill-row{display:flex; flex-wrap:wrap; gap:6px; min-width:0;}
+.note-pill{background:var(--lime-wash); color:var(--lime-dark); border:1px solid var(--lime-bright); font-size:.76rem; font-weight:700; padding:4px 10px; border-radius:20px; white-space:nowrap;}
+.home-card .cap-corner{position:absolute; top:10px; left:10px; z-index:1; font-size:.78rem; padding:4px 11px; box-shadow:0 1px 4px rgba(0,0,0,.25);}
+/* Sold out (same treatment as the Cannon's site) */
+.sold-grid{margin-top:14px;}
+.home-card.sold{position:relative; cursor:default;}
+.home-card.sold:hover{box-shadow:none; border-color:var(--line);}
+.home-card.sold .sold-inner{display:flex; flex-direction:column; flex:1; opacity:.45; filter:grayscale(1);}
+.home-card.sold:hover .cover img{transform:none;}
+.sold-badge{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-10deg); background:#A3261B; color:var(--white); font-weight:800; font-size:.9rem; letter-spacing:.1em; text-transform:uppercase; padding:6px 30px; box-shadow:0 2px 8px rgba(0,0,0,.2); white-space:nowrap; z-index:2;}
 
 /* Contact */
 .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:44px;}
@@ -508,18 +518,23 @@ var MAPS = {
             open:  'https://www.google.com/maps/search/?api=1&query=Oswego,+NY+13126' }
 };
 
-// Homes: name, town, max guests, Lodgify page slug, cover photo URL, area ('oswego' or 'river').
-// Cover photos are each listing's main Lodgify photo. To use a different photo, paste its image URL into 'cover'.
+// Homes now load live from Lodgify (through the Netlify function), so homes added in Lodgify appear on their own.
+// The list below is only used if that can't load (e.g. in a preview). A cover photo set here is still
+// used in place of Lodgify's main photo when the home's ID matches.
 var HOMES = [
-  { name:'Steps from the Park', town:'Oswego', guests:8, slug:'steps-from-the-park', cover:'https://l.icdbcdn.com/oh/c5bf6786-720e-41ea-827a-15dfc0cb8f6f.png?w=800', area:'oswego' },
-  { name:'Central and Convenient Ground Floor Apartment', town:'Oswego', guests:4, slug:'central-and-convenient-ground-floor-apartment', cover:'https://l.icdbcdn.com/oh/66e2dac5-570f-4d7f-aeb2-9b2d7b2c1940.png?w=800', area:'oswego' },
-  { name:'Country Cottage by the Salmon River', town:'Pulaski', guests:8, slug:'country-cottage-by-the-salmon-river', cover:'https://l.icdbcdn.com/oh/237d2408-990b-4d87-9bb1-650c60dac382.jpg?w=800', area:'river' },
-  { name:'Riverview Bliss in Beautiful Home', town:'Pulaski', guests:8, slug:'riverview-bliss-in-beautiful-home', cover:'https://l.icdbcdn.com/oh/bfc0da63-4ecc-45d7-9868-79e6600ca0dc.jpg?w=800', area:'river' },
-  { name:'Salmon River View: Bar, Grill & Perfect Location', town:'Pulaski', guests:12, slug:'salmon-river-view-bar-grill-perfect-location', cover:'https://l.icdbcdn.com/oh/a1d3ae60-fcb0-4b9a-9354-28cb498504a6.png?w=800', area:'river' },
-  { name:'Rustic Riverside Charm & Exclusive Fishing Access', town:'Pulaski', guests:8, slug:'rustic-riverside-charm-and-exclusive-fishing-access', cover:'https://l.icdbcdn.com/oh/6510b3f9-ad4e-4733-9d6c-acffdde9eb27.jpg?w=800', area:'river' },
-  { name:'Charming Cottage by Lake Ontario: Firepit & Yard', town:'Pulaski', guests:6, slug:'charming-cottage-by-lake-ontario-firepit-yard', cover:'https://l.icdbcdn.com/oh/67c72fc5-0fe9-4188-8913-30a0cc58e770.jpg?w=800', area:'river' },
-  { name:'Mexico Point Ranch', town:'Mexico', guests:7, slug:'mexico-point-ranch', cover:'https://l.icdbcdn.com/oh/39d8aa7d-2d1f-423f-809d-8c440dbc71c8.jpg?w=800', area:'river' },
-  { name:'Mexico Point Farmhouse', town:'Mexico', guests:6, slug:'mexico-point-farmhouse', cover:'https://l.icdbcdn.com/oh/75865f45-b8f5-4cff-b433-e52a3f191f7b.jpg?w=800', area:'river' }
+  { id:701378, name:'Steps from the Park', town:'Oswego', guests:8, slug:'steps-from-the-park', cover:'https://l.icdbcdn.com/oh/c5bf6786-720e-41ea-827a-15dfc0cb8f6f.png?w=800', area:'oswego' },
+  { id:701384, name:'Central and Convenient Ground Floor Apartment', town:'Oswego', guests:4, slug:'central-and-convenient-ground-floor-apartment', cover:'https://l.icdbcdn.com/oh/66e2dac5-570f-4d7f-aeb2-9b2d7b2c1940.png?w=800', area:'oswego' },
+  { id:634859, name:'Country Cottage by the Salmon River', town:'Pulaski', guests:8, slug:'country-cottage-by-the-salmon-river', cover:'https://l.icdbcdn.com/oh/237d2408-990b-4d87-9bb1-650c60dac382.jpg?w=800', area:'river' },
+  { id:485239, name:'Riverview Bliss in Beautiful Home', town:'Pulaski', guests:8, slug:'riverview-bliss-in-beautiful-home', cover:'https://l.icdbcdn.com/oh/bfc0da63-4ecc-45d7-9868-79e6600ca0dc.jpg?w=800', area:'river' },
+  { id:445690, name:'Salmon River View: Bar, Grill & Perfect Location', town:'Pulaski', guests:12, slug:'salmon-river-view-bar-grill-perfect-location', cover:'https://l.icdbcdn.com/oh/a1d3ae60-fcb0-4b9a-9354-28cb498504a6.png?w=800', area:'river' },
+  { id:445694, name:'Rustic Riverside Charm & Exclusive Fishing Access', town:'Pulaski', guests:8, slug:'rustic-riverside-charm-and-exclusive-fishing-access', cover:'https://l.icdbcdn.com/oh/6510b3f9-ad4e-4733-9d6c-acffdde9eb27.jpg?w=800', area:'river' },
+  { id:792765, name:'Charming Cottage by Lake Ontario: Firepit & Yard', town:'Pulaski', guests:6, slug:'charming-cottage-by-lake-ontario-firepit-yard', cover:'https://l.icdbcdn.com/oh/67c72fc5-0fe9-4188-8913-30a0cc58e770.jpg?w=800', area:'river' },
+  { id:808807, name:'Lake Ontario Estate: Firepit, Grill & Fishing Charters', town:'Mexico', guests:13, slug:'lake-ontario-estate-firepit-grill-fishing-charters', cover:'https://l.icdbcdn.com/oh/7610e3ef-5c47-4d32-bbe3-4afd7e84a7d6.jpg?w=800', area:'river' },
+  { id:445691, name:'Mexico Point Ranch', town:'Mexico', guests:7, slug:'mexico-point-ranch', cover:'https://l.icdbcdn.com/oh/39d8aa7d-2d1f-423f-809d-8c440dbc71c8.jpg?w=800', area:'river' },
+  { id:445688, name:'Mexico Point Farmhouse', town:'Mexico', guests:6, slug:'mexico-point-farmhouse', cover:'https://l.icdbcdn.com/oh/75865f45-b8f5-4cff-b433-e52a3f191f7b.jpg?w=800', area:'river' },
+  // Cannon's units that appear in search results only (no tile on the region pages)
+  { id:856029, name:'Salmon River Lodge, 3BR, Sleeps 6 & Trail Access', town:'Altmar', guests:6, slug:'salmon-river-lodge-3br-sleeps-6-trail-access', cover:'https://l.icdbcdn.com/oh/cbf19f1d-a561-47f9-9e75-cee5ae76965c.jpg?w=800', area:'river', tile:false },
+  { id:856028, name:'Salmon River Apt: Sleeps 6, Trail Access', town:'Altmar', guests:6, slug:'salmon-river-apt-sleeps-6-trail-access', cover:'https://l.icdbcdn.com/oh/5bdf65c2-84f4-42be-9897-bde3eedd3397.jpg?w=800', area:'river', tile:false }
 ];
 var AREA_LABEL = { oswego:'Oswego City', river:'Port Ontario & the Salmon River' };
 /* ================================================================= */
@@ -527,25 +542,73 @@ var AREA_LABEL = { oswego:'Oswego City', river:'Port Ontario & the Salmon River'
 function homeUrl(h){ return BOOKING_SITE + h.slug; }
 function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
 
-/* Home cards */
-document.querySelectorAll('.homes-grid').forEach(function(grid){
-  var area = grid.getAttribute('data-area');
-  grid.innerHTML = HOMES.filter(function(h){ return h.area === area; }).map(function(h){
-    return '<a class="home-card" href="' + homeUrl(h) + '" target="_blank" rel="noopener">' +
-      '<div class="cover"><span class="cover-fallback">' + esc(h.town) + ', NY</span>' +
-        (h.cover ? '<img src="' + h.cover + '" alt="' + esc(h.name) + '" loading="lazy" onerror="this.remove()">' : '') +
-      '</div><div class="body">' +
-      '<h3>' + esc(h.name) + '</h3>' +
-      '<p class="town">' + esc(h.town) + ', NY</p>' +
-      '<div class="meta"><span class="capacity-pill">Sleeps ' + h.guests + '</span><span class="arrow">View &amp; book &rarr;</span></div>' +
-    '</div></a>';
-  }).join('');
-});
-['oswego','river'].forEach(function(a){
-  var n = HOMES.filter(function(h){ return h.area === a; }).length;
-  var el = document.getElementById(a === 'oswego' ? 'count-oswego' : 'count-river');
-  if(el) el.innerHTML = 'View ' + n + ' homes &amp; map &rarr;';
-});
+function homeById(id){ for(var i=0;i<HOMES.length;i++){ if(HOMES[i].id === id) return HOMES[i]; } return null; }
+function townLabel(t){ return t ? esc(t) + ', NY' : ''; }
+
+/* Home cards on the region pages */
+function renderHomes(){
+  document.querySelectorAll('.homes-grid[data-area]').forEach(function(grid){
+    var area = grid.getAttribute('data-area');
+    grid.innerHTML = HOMES.filter(function(h){ return h.area === area && h.tile !== false; }).map(function(h){
+      return '<a class="home-card" href="' + homeUrl(h) + '" target="_blank" rel="noopener">' +
+        '<div class="cover"><span class="cover-fallback">' + (townLabel(h.town) || esc(AREA_LABEL[area])) + '</span>' +
+          (h.cover ? '<img src="' + h.cover + '" alt="' + esc(h.name) + '" loading="lazy" onerror="this.remove()">' : '') +
+        '</div><div class="body">' +
+        '<h3>' + esc(h.name) + '</h3>' +
+        '<p class="town">' + (townLabel(h.town) || esc(AREA_LABEL[area])) + '</p>' +
+        '<div class="meta"><span class="pill-row">' + (h.guests ? '<span class="capacity-pill">Sleeps ' + h.guests + '</span>' : '') + (h.note ? '<span class="note-pill">' + esc(h.note) + '</span>' : '') + '</span><span class="arrow">View &amp; book &rarr;</span></div>' +
+      '</div></a>';
+    }).join('');
+  });
+  ['oswego','river'].forEach(function(a){
+    var n = HOMES.filter(function(h){ return h.area === a && h.tile !== false; }).length;
+    var el = document.getElementById(a === 'oswego' ? 'count-oswego' : 'count-river');
+    if(el) el.innerHTML = 'View ' + n + (n === 1 ? ' home' : ' homes') + ' &amp; map &rarr;';
+  });
+}
+renderHomes();
+
+/* Guests dropdown: 1 up to the largest home, then "N+ Guests" (which turns the button into Contact us) */
+var GUEST_MAX = 1;
+function buildGuestOptions(){
+  var sel = document.getElementById('guests');
+  var keep = sel.value || '2';
+  GUEST_MAX = Math.max.apply(null, [1].concat(HOMES.map(function(h){ return h.guests || 0; })));
+  sel.innerHTML = '';
+  for(var g=1; g<=GUEST_MAX; g++){
+    var o = document.createElement('option'); o.value = g; o.textContent = g + (g===1 ? ' Guest' : ' Guests'); sel.appendChild(o);
+  }
+  var big = document.createElement('option'); big.value = 'large'; big.textContent = (GUEST_MAX + 1) + '+ Guests'; sel.appendChild(big);
+  sel.value = (keep === 'large' || +keep <= GUEST_MAX) ? keep : String(GUEST_MAX);
+}
+
+/* Load the live list of homes from Lodgify (via the Netlify function). Keeps the built-in list if it can't. */
+var CANNONS_SEARCH_ONLY = [856029, 856028]; // Cannon's units: in search results, but no tile on the region pages
+function loadLiveHomes(){
+  fetch('/.netlify/functions/availability?homes=1')
+    .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(data){
+      if(!data || data.fallback || !Array.isArray(data.homes) || !data.homes.length) return;
+      HOMES = data.homes.map(function(h){
+        var known = homeById(h.id) || {};
+        return {
+          id: h.id,
+          name: known.name || h.name || ('Home ' + h.id),
+          town: h.town || known.town || '',
+          guests: h.guests || known.guests || null,
+          slug: known.slug || h.slug || '',
+          cover: known.cover || h.cover || '',
+          note: h.note || known.note || '',
+          area: h.region,
+          tile: CANNONS_SEARCH_ONLY.indexOf(h.id) === -1
+        };
+      });
+      renderHomes();
+      buildGuestOptions();
+      document.dispatchEvent(new Event('homes-updated'));
+    })
+    .catch(function(e){ console.warn('Using the built-in list of homes:', e.message); });
+}
 
 /* Map widgets (loaded when the page is shown) */
 document.querySelectorAll('[data-map-link]').forEach(function(a){ a.href = MAPS[a.getAttribute('data-map-link')].open; });
@@ -576,11 +639,7 @@ function searchUrl(region, checkin, checkout, guests){
   var outEl = document.getElementById('checkout');
   var guestsSel = document.getElementById('guests');
   var err = document.getElementById('formError');
-  var max = Math.max.apply(null, HOMES.map(function(h){ return h.guests; }));
-  for(var g=1; g<=max; g++){
-    var o = document.createElement('option'); o.value = g; o.textContent = g + (g===1 ? ' Guest' : ' Guests'); guestsSel.appendChild(o);
-  }
-  var big = document.createElement('option'); big.value = 'large'; big.textContent = (max + 1) + '+ Guests'; guestsSel.appendChild(big);
+  buildGuestOptions();
   guestsSel.value = '2';
 
   function iso(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
@@ -691,7 +750,7 @@ function searchUrl(region, checkin, checkout, guests){
     }
   }
 
-  /* Live availability results (Salmon River region; uses the Netlify function) */
+  /* Live availability results (uses the Netlify function) */
   var results = document.getElementById('results');
   function norm(s){ return String(s).toLowerCase().replace(/\band\b/g,'').replace(/[^a-z0-9]/g,'').slice(0,16); }
   function matchHome(name){
@@ -710,22 +769,38 @@ function searchUrl(region, checkin, checkout, guests){
   function propertyUrl(slug, id, a, d, guests){
     return slug ? BOOKING_SITE + slug + '?' + stayParams(a, d, guests) : checkoutUrl(id, a, d, guests);
   }
-  // Extra details for homes in the search that have no tile on the site (matched by Lodgify ID).
-  var ID_INFO = {
-    808807:{ town:'Mexico', guests:13, slug:'lake-ontario-estate-firepit-grill-fishing-charters', cover:'https://l.icdbcdn.com/oh/7610e3ef-5c47-4d32-bbe3-4afd7e84a7d6.jpg?w=800' },
-    856029:{ town:'Altmar', guests:6, slug:'salmon-river-lodge-3br-sleeps-6-trail-access', cover:'https://l.icdbcdn.com/oh/cbf19f1d-a561-47f9-9e75-cee5ae76965c.jpg?w=800' },
-    856028:{ town:'Altmar', guests:6, slug:'salmon-river-apt-sleeps-6-trail-access', cover:'https://l.icdbcdn.com/oh/5bdf65c2-84f4-42be-9897-bde3eedd3397.jpg?w=800' }
-  };
-  function resultCard(h, a, d, guests, note){
-    var local = matchHome(h.name) || ID_INFO[h.id] || {};
-    var name = local.name || h.name || ('Home ' + h.id);
-    var town = local.town ? esc(local.town) + ', NY' : esc(AREA_LABEL[region.value]);
-    return '<a class="home-card" href="' + propertyUrl(local.slug, h.id, a, d, guests) + '" target="_blank" rel="noopener">' +
-      '<div class="cover"><span class="cover-fallback">' + town + '</span>' +
+  // Details for a search result: the site's list (by Lodgify ID, then by name), then what the checker sent.
+  function infoFor(h){
+    var local = homeById(h.id) || matchHome(h.name) || {};
+    return {
+      name: local.name || h.name || ('Home ' + h.id),
+      town: local.town || h.town || '',
+      guests: local.guests || h.guests || null,
+      slug: local.slug || h.slug || '',
+      cover: local.cover || h.cover || '',
+      note: local.note || h.note || ''
+    };
+  }
+  // A search result tile. Same look as the Cannon's site: "Max X People" in the corner of the photo,
+  // and booked homes shown greyed out with a "Sold out" stamp (not clickable).
+  function resultInner(local, town, name, footer){
+    return '<div class="cover"><span class="cover-fallback">' + town + '</span>' +
         (local.cover ? '<img src="' + local.cover + '" alt="' + esc(name) + '" loading="lazy" onerror="this.remove()">' : '') +
+        (local.guests ? '<span class="capacity-pill cap-corner">Max ' + local.guests + ' People</span>' : '') +
       '</div><div class="body"><h3>' + esc(name) + '</h3><p class="town">' + town + '</p>' +
-      '<div class="meta">' + (local.guests ? '<span class="capacity-pill">Sleeps ' + local.guests + '</span>' : '<span></span>') +
-      '<span class="arrow">' + (note || 'View home &amp; book') + ' &rarr;</span></div></div></a>';
+      '<div class="meta">' + (local.note ? '<span class="note-pill">' + esc(local.note) + '</span>' : '<span></span>') + footer + '</div></div>';
+  }
+  function resultCard(h, a, d, guests, note){
+    var local = infoFor(h), name = local.name;
+    var town = townLabel(local.town) || esc(AREA_LABEL[region.value]);
+    return '<a class="home-card" href="' + propertyUrl(local.slug, h.id, a, d, guests) + '" target="_blank" rel="noopener">' +
+      resultInner(local, town, name, '<span class="arrow">' + (note || 'View home &amp; book') + ' &rarr;</span>') + '</a>';
+  }
+  function soldCard(h){
+    var local = infoFor(h), name = local.name;
+    var town = townLabel(local.town) || esc(AREA_LABEL[region.value]);
+    return '<div class="home-card sold" aria-label="' + esc(name) + ', sold out for these dates">' +
+      '<div class="sold-inner">' + resultInner(local, town, name, '') + '</div><span class="sold-badge">Sold out</span></div>';
   }
   function showResults(){
     var a = inEl.value, d = outEl.value, guests = parseInt(guestsSel.value, 10) || 1, area = region.value;
@@ -733,7 +808,7 @@ function searchUrl(region, checkin, checkout, guests){
     results.hidden = false;
     results.innerHTML = '<p class="results-status">Checking which homes are free from ' + pretty(a) + ' to ' + pretty(d) + '&hellip;</p>';
     results.scrollIntoView({behavior:'smooth', block:'nearest'});
-    var url = AVAILABILITY_URL + '?' + new URLSearchParams({ region:area, arrival:a, departure:d }).toString();
+    var url = AVAILABILITY_URL + '?' + new URLSearchParams({ region:area, arrival:a, departure:d, guests:String(guests) }).toString();
     function getJson(){
       return fetch(url).then(function(r){
         return r.text().then(function(t){
@@ -747,20 +822,24 @@ function searchUrl(region, checkin, checkout, guests){
     getJson()
       .catch(function(e){ console.warn('Availability check failed, retrying:', e.message); return getJson(); })
       .then(function(data){
-        var fits = function(h){ var l = matchHome(h.name) || ID_INFO[h.id]; return !l || !l.guests || l.guests >= guests; };
+        var fits = function(h){ var g = infoFor(h).guests; return !g || g >= guests; };
         var free = data.homes.filter(function(h){ return h.status === 'available' && fits(h); });
         var unsure = data.homes.filter(function(h){ return h.status === 'unknown' && fits(h); });
+        var sold = data.homes.filter(function(h){ return h.status === 'unavailable' && fits(h); });
         var head = '<div class="results-head"><h3>' + (free.length ? free.length + (free.length === 1 ? ' home' : ' homes') + ' available' : 'No homes available') + '</h3>' +
           '<p>' + esc(label) + ' &middot; ' + pretty(a) + ' to ' + pretty(d) + ' &middot; ' + guests + (guests === 1 ? ' guest' : ' guests') + '</p></div>';
         var html = head;
         if(free.length){
           html += '<div class="homes-grid">' + free.map(function(h){ return resultCard(h, a, d, guests); }).join('') + '</div>';
         } else if(!unsure.length){
-          html += '<p class="results-status">Every home in ' + esc(label) + ' is booked for those dates or too small for your group. Try different dates, or <a href="#contact">contact us</a> and we’ll help.</p>';
+          html += '<p class="results-status">' + (sold.length ? 'Every home that fits your group is booked for those dates.' : 'No homes in ' + esc(label) + ' fit your group for those dates.') + ' Try different dates, or <a href="#contact">contact us</a> and we’ll help.</p>';
         }
         if(unsure.length){
           html += '<p class="results-status">We couldn’t confirm these dates for the homes below. Open one to see its photos and live calendar.</p>' +
             '<div class="homes-grid">' + unsure.map(function(h){ return resultCard(h, a, d, guests, 'View home &amp; check dates'); }).join('') + '</div>';
+        }
+        if(sold.length){
+          html += '<div class="homes-grid sold-grid">' + sold.map(soldCard).join('') + '</div>';
         }
         results.innerHTML = html;
       })
@@ -772,7 +851,7 @@ function searchUrl(region, checkin, checkout, guests){
   function prefillContact(){
     var msg = document.getElementById('cmsg');
     if(!msg || msg.value.trim()) return;
-    var line = 'Hi, we are a group of ' + (max + 1) + ' or more guests looking to stay in ' + region.options[region.selectedIndex].text;
+    var line = 'Hi, we are a group of ' + (GUEST_MAX + 1) + ' or more guests looking to stay in ' + region.options[region.selectedIndex].text;
     if(inEl.value && outEl.value) line += ' from ' + pretty(inEl.value) + ' to ' + pretty(outEl.value);
     msg.value = line + '. Total number of guests: ';
   }
@@ -790,6 +869,9 @@ function searchUrl(region, checkin, checkout, guests){
   setValue = function(k, v){ _setValue(k, v); refreshLink(); };
   refreshLink();
 })();
+
+document.addEventListener('homes-updated', function(){ document.getElementById('guests').dispatchEvent(new Event('change')); });
+loadLiveHomes();
 
 /* Book page map: follows the region dropdown */
 (function(){

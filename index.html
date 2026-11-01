@@ -190,6 +190,21 @@ section.alt{background:var(--paper); border-top:1px solid var(--line); border-bo
 .contact-info dt{font-weight:700; color:var(--lake-dark); margin-top:18px; font-size:.95rem;}
 .contact-info dt:first-child{margin-top:0;}
 .contact-info dd{margin:3px 0 0; color:var(--ink-soft); overflow-wrap:anywhere;}
+/* Guided fishing trips */
+#page-guided-trips .section-head{margin-left:auto; margin-right:auto; text-align:center;}
+.guide-text{max-width:70ch; margin:0 auto; text-align:center;}
+.guide-text p{margin:0; color:var(--ink-soft); font-size:1.02rem;}
+.guide-depart{margin:26px 0 0; color:var(--ink-soft); text-align:center;}
+.guide-depart strong{color:var(--lake-dark);}
+.guide-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+@media (max-width:700px){ .guide-grid{grid-template-columns:1fr;} }
+.guide-card{background:var(--white); border:1px solid var(--line); border-radius:8px; padding:20px 18px; text-align:center; min-width:0;}
+.guide-card h3{margin:12px 0 6px; font-size:1.05rem; color:var(--lake-dark);}
+.guide-card p{margin:0; color:var(--ink-soft); font-size:.92rem;}
+.guide-photo{width:120px; height:120px; max-width:100%; margin:0 auto; border:2px dashed var(--line); border-radius:50%; background:var(--lime-wash); display:grid; place-items:center; color:var(--ink-soft); font-size:.8rem; overflow:hidden;}
+.guide-photo img{width:100%; height:100%; object-fit:cover;}
+.guide-note{text-align:center; margin:28px 0 0; font-size:.78rem; color:var(--ink-soft); opacity:.8; font-style:italic;}
+
 /* Footer */
 footer{background:var(--lake-dark); color:#A9BAC6; padding-block:38px; padding-bottom:calc(38px + env(safe-area-inset-bottom,0px));}
 .footer-grid{display:flex; justify-content:space-between; flex-wrap:wrap; gap:20px; font-size:.87rem;}
@@ -225,6 +240,7 @@ footer{background:var(--lake-dark); color:#A9BAC6; padding-block:38px; padding-b
           </ul>
         </div>
       </li>
+      <li><a data-page="guided-trips" href="#guided-trips">Guided Fishing Trips</a></li>
       <li><a data-page="contact" href="#contact">Contact</a></li>
     </ul>
     <a class="nav-cta" href="#home">Check Availability</a>
@@ -382,6 +398,58 @@ footer{background:var(--lake-dark); color:#A9BAC6; padding-block:38px; padding-b
     </section>
   </div>
 
+  <!-- ============ GUIDED FISHING TRIPS ============ -->
+  <div class="page" id="page-guided-trips">
+    <section class="page-hero">
+      <div class="wrap">
+        <span class="kicker">Partner guides</span>
+        <h1>Guided Fishing Trips</h1>
+        <p>Limey Joe's works with some of the best guides around, on the water year round.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <span class="kicker">Every season on the water</span>
+          <h2>Fish with a local guide, any time of year</h2>
+          <p>From open-water charters on Lake Ontario to drift trips down the Salmon River, our partner guides run trips through every season. They leave from Port Ontario, Mexico and Oswego.</p>
+        </div>
+        <div class="guide-text">
+          <p>Limey Joe's works with some of the best guides year round. In spring, trips on Lake Ontario target Brown Trout. Summer brings charters for Salmon and Lake Trout. In the fall, drift trips target Kings in the Salmon run, on the Salmon River, and through the winter, drift trips chase Steelhead.</p>
+        </div>
+        <p class="guide-depart"><strong>Departure ports:</strong> Port Ontario &middot; Mexico &middot; Oswego</p>
+      </div>
+    </section>
+
+    <section class="alt">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="kicker">The guides</span>
+          <h2>Meet our partner guides</h2>
+        </div>
+        <div class="guide-grid">
+          <div class="guide-card">
+            <div class="guide-photo" role="img" aria-label="Photo of guide 1 (to be added)"><span>Photo</span></div>
+            <h3>Guide name</h3>
+            <p>Short bio goes here.</p>
+          </div>
+          <div class="guide-card">
+            <div class="guide-photo" role="img" aria-label="Photo of guide 2 (to be added)"><span>Photo</span></div>
+            <h3>Guide name</h3>
+            <p>Short bio goes here.</p>
+          </div>
+          <div class="guide-card">
+            <div class="guide-photo" role="img" aria-label="Photo of guide 3 (to be added)"><span>Photo</span></div>
+            <h3>Guide name</h3>
+            <p>Short bio goes here.</p>
+          </div>
+        </div>
+        <p class="guide-note">Our partner guides all operate independently and are not employees of Limey Joe's.</p>
+      </div>
+    </section>
+  </div>
+
   <!-- ============ CONTACT ============ -->
   <div class="page" id="page-contact">
     <section class="page-hero">
@@ -423,7 +491,7 @@ footer{background:var(--lake-dark); color:#A9BAC6; padding-block:38px; padding-b
 <footer>
   <div class="wrap footer-grid">
     <span>&copy; 2026 Limey Joe's. All rights reserved.</span>
-    <span class="footer-links"><a href="#home">Book direct</a><a href="#oswego-city">Oswego City</a><a href="#salmon-river">Port Ontario &amp; the Salmon River</a><a href="#contact">Contact</a></span>
+    <span class="footer-links"><a href="#home">Book direct</a><a href="#oswego-city">Oswego City</a><a href="#salmon-river">Port Ontario &amp; the Salmon River</a><a href="#guided-trips">Guided Fishing Trips</a><a href="#contact">Contact</a></span>
   </div>
 </footer>
 
